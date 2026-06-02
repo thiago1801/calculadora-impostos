@@ -3,431 +3,247 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Calculadora de Impostos e Preço de Venda</title>
+<title>Calculadora de Impostos</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#22C98B">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Impostos">
+<link rel="apple-touch-icon" href="/icon-192.png">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0F1117;
-    --bg2: #181C26;
-    --bg3: #1E2332;
-    --border: #2A2F42;
-    --border2: #343A52;
-    --text: #E8EAF0;
-    --text2: #8A90A8;
-    --text3: #5A607A;
-    --green: #22C98B;
-    --green2: #0E8A5F;
-    --green-bg: #0D2B1F;
-    --blue: #4A9EE8;
-    --blue-bg: #0D1F35;
-    --amber: #F0A830;
-    --amber-bg: #2A1E0A;
-    --red: #E85A5A;
-    --red-bg: #2A0D0D;
-    --radius: 10px;
-    --radius-sm: 6px;
-    --shadow: 0 2px 16px rgba(0,0,0,0.4);
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    font-size: 14px;
-    line-height: 1.5;
-  }
-
-  /* HEADER */
-  header {
-    background: linear-gradient(135deg, #131824 0%, #0F1117 100%);
-    border-bottom: 1px solid var(--border);
-    padding: 24px 0;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    backdrop-filter: blur(12px);
-  }
-  .header-inner {
-    max-width: 860px;
-    margin: 0 auto;
-    padding: 0 24px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
-  .logo-badge {
-    width: 40px; height: 40px;
-    background: linear-gradient(135deg, var(--green), var(--green2));
-    border-radius: var(--radius-sm);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 20px;
-    flex-shrink: 0;
-  }
-  .header-title { font-size: 18px; font-weight: 600; }
-  .header-sub { font-size: 12px; color: var(--text2); margin-top: 2px; }
-
-  /* MAIN */
-  main {
-    max-width: 860px;
-    margin: 0 auto;
-    padding: 32px 24px 80px;
-  }
-
-  /* SECTION CARD */
-  .card {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 20px;
-    margin-bottom: 16px;
-    transition: border-color .2s;
-  }
-  .card:focus-within { border-color: var(--border2); }
-
-  .card-title {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text2);
-    text-transform: uppercase;
-    letter-spacing: .06em;
-    margin-bottom: 14px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .card-title .icon { font-size: 15px; }
-
-  /* GRID */
-  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
-  @media(max-width:600px) { .grid2,.grid3 { grid-template-columns: 1fr; } }
-
-  /* FORM ELEMENTS */
-  label {
-    display: block;
-    font-size: 12px;
-    color: var(--text2);
-    margin-bottom: 5px;
-    font-weight: 500;
-  }
-  input[type=text], input[type=number], select {
-    width: 100%;
-    padding: 9px 12px;
-    font-size: 14px;
-    font-family: 'DM Sans', sans-serif;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    background: var(--bg3);
-    color: var(--text);
-    outline: none;
-    transition: border-color .15s;
-    -webkit-appearance: none;
-  }
-  input:focus, select:focus { border-color: var(--green); }
-  input[type=number] { font-family: 'DM Mono', monospace; }
-  select option { background: var(--bg2); }
-
-  /* TOGGLE */
-  .toggle-group { display: flex; gap: 6px; }
-  .toggle-btn {
-    flex: 1;
-    padding: 9px 14px;
-    font-size: 13px;
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 500;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    background: var(--bg3);
-    color: var(--text2);
-    cursor: pointer;
-    transition: all .15s;
-  }
-  .toggle-btn:hover { border-color: var(--border2); color: var(--text); }
-  .toggle-btn.active { background: var(--green-bg); border-color: var(--green); color: var(--green); }
-  .toggle-btn.active-blue { background: var(--blue-bg); border-color: var(--blue); color: var(--blue); }
-
-  /* INFO BOX */
-  .info-box {
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 10px 12px;
-    font-size: 12px;
-    color: var(--text2);
-    margin-top: 12px;
-    line-height: 1.6;
-  }
-  .info-box.green { border-color: var(--green-bg); background: var(--green-bg); color: #4EDBA3; }
-  .info-box.amber { border-color: var(--amber-bg); background: var(--amber-bg); color: var(--amber); }
-
-  /* SLIDER */
-  .slider-row { display: flex; align-items: center; gap: 14px; margin-top: 6px; }
-  input[type=range] {
-    flex: 1;
-    -webkit-appearance: none;
-    height: 4px;
-    background: var(--border2);
-    border-radius: 4px;
-    outline: none;
-    cursor: pointer;
-  }
-  input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 18px; height: 18px;
-    border-radius: 50%;
-    background: var(--green);
-    border: 2px solid var(--bg);
-    box-shadow: 0 0 0 3px rgba(34,201,139,.2);
-    cursor: pointer;
-    transition: box-shadow .15s;
-  }
-  input[type=range]::-webkit-slider-thumb:hover {
-    box-shadow: 0 0 0 5px rgba(34,201,139,.25);
-  }
-  .slider-val {
-    font-family: 'DM Mono', monospace;
-    font-size: 18px;
-    font-weight: 500;
-    color: var(--green);
-    min-width: 50px;
-    text-align: right;
-  }
-
-  /* MAIN BUTTON */
-  .calc-btn {
-    width: 100%;
-    padding: 14px;
-    font-size: 15px;
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 600;
-    background: linear-gradient(135deg, var(--green), var(--green2));
-    color: #fff;
-    border: none;
-    border-radius: var(--radius);
-    cursor: pointer;
-    transition: all .15s;
-    letter-spacing: .02em;
-    box-shadow: 0 4px 20px rgba(34,201,139,.25);
-    margin-top: 4px;
-  }
-  .calc-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 28px rgba(34,201,139,.35); }
-  .calc-btn:active { transform: translateY(0); }
-
-  /* DIVIDER */
-  .divider { height: 1px; background: var(--border); margin: 28px 0; }
-
-  /* SECTION HEADING */
-  .section-heading {
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--text);
-    margin-bottom: 14px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  /* METRICS GRID */
-  .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px,1fr)); gap: 8px; }
-  .metric {
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 12px 14px;
-  }
-  .metric.highlight-green { border-color: var(--green2); background: var(--green-bg); }
-  .metric.highlight-amber { border-color: #5A3A00; background: var(--amber-bg); }
-  .metric.highlight-red { border-color: #5A1A1A; background: var(--red-bg); }
-  .metric-label { font-size: 11px; color: var(--text2); margin-bottom: 4px; }
-  .metric-value {
-    font-family: 'DM Mono', monospace;
-    font-size: 15px;
-    font-weight: 500;
-    color: var(--text);
-  }
-  .metric-value.green { color: var(--green); }
-  .metric-value.blue { color: var(--blue); }
-  .metric-value.red { color: var(--red); }
-  .metric-value.amber { color: var(--amber); }
-
-  /* TABLE ROWS */
-  .tax-rows { }
-  .tax-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px 0;
-    border-bottom: 1px solid var(--border);
-    font-size: 13px;
-    gap: 12px;
-  }
-  .tax-row:last-child { border-bottom: none; }
-  .tax-row-label { color: var(--text2); }
-  .tax-row-value { font-family: 'DM Mono', monospace; font-weight: 500; flex-shrink: 0; }
-  .tax-row.total .tax-row-label { color: var(--text); font-weight: 600; }
-  .tax-row.total .tax-row-value { color: var(--red); font-size: 14px; }
-
-  /* PRICE CARDS */
-  .price-card {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 20px;
-    margin-bottom: 14px;
-    position: relative;
-    transition: border-color .2s;
-  }
-  .price-card.green-card { border-color: var(--green2); }
-  .price-card.blue-card { border-color: #1E3A5A; }
-  .price-card-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 14px;
-    flex-wrap: wrap;
-  }
-  .badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 12px;
-    font-weight: 600;
-    padding: 4px 12px;
-    border-radius: 20px;
-  }
-  .badge-green { background: var(--green-bg); color: var(--green); border: 1px solid var(--green2); }
-  .badge-blue { background: var(--blue-bg); color: var(--blue); border: 1px solid #1E3A5A; }
-  .badge-winner {
-    background: var(--green);
-    color: #fff;
-    font-size: 11px;
-    font-weight: 700;
-    padding: 3px 10px;
-    border-radius: 20px;
-    letter-spacing: .03em;
-  }
-  .formula-box {
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    color: var(--text3);
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 8px 12px;
-    margin-top: 12px;
-  }
-
-  /* SEARCH BUTTONS */
-  .search-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  @media(max-width:480px) { .search-grid { grid-template-columns: 1fr; } }
-  .search-btn {
-    padding: 10px 14px;
-    font-size: 13px;
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 500;
-    background: var(--bg3);
-    color: var(--text);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    transition: all .15s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 7px;
-  }
-  .search-btn:hover { border-color: var(--border2); background: var(--bg); }
-
-  /* DIFAL TAG */
-  .tag-difal {
-    display: inline-block;
-    font-size: 11px;
-    padding: 2px 8px;
-    border-radius: 4px;
-    background: var(--amber-bg);
-    color: var(--amber);
-    margin-left: 8px;
-    font-weight: 500;
-  }
-
-  /* FOOTER */
-  footer {
-    text-align: center;
-    padding: 24px;
-    font-size: 12px;
-    color: var(--text3);
-    border-top: 1px solid var(--border);
-  }
-
-  /* RESULTS hidden by default */
-  #results { display: none; }
-
-  /* PRINT */
-  @media print {
-    header { position: relative; }
-    .calc-btn, .search-grid, #busca-section { display: none; }
-    body { background: #fff; color: #000; }
-    .card, .price-card { border: 1px solid #ccc; background: #fff; }
-  }
+:root{--bg:#0F1117;--bg2:#181C26;--bg3:#1E2332;--border:#2A2F42;--border2:#343A52;--text:#E8EAF0;--text2:#8A90A8;--text3:#5A607A;--green:#22C98B;--green2:#0E8A5F;--green-bg:#0D2B1F;--blue:#4A9EE8;--blue-bg:#0D1F35;--amber:#F0A830;--amber-bg:#2A1E0A;--red:#E85A5A;--red-bg:#2A0D0D;--radius:10px;--radius-sm:6px;--header-bg:linear-gradient(135deg,#131824,#0F1117);}
+body.light{--bg:#F0F2F7;--bg2:#FFFFFF;--bg3:#E8EBF2;--border:#D0D5E8;--border2:#B8BECE;--text:#1A1E2E;--text2:#5A6080;--text3:#8A90A8;--green:#0E8A5F;--green2:#0A6B49;--green-bg:#D4F0E6;--blue:#185FA5;--blue-bg:#D6E8F8;--amber:#854F0B;--amber-bg:#FEF0D6;--red:#A32D2D;--red-bg:#FAD9D9;--header-bg:linear-gradient(135deg,#E0E5F5,#F0F2F7);}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;line-height:1.5;transition:background .25s,color .25s;}
+header{background:var(--header-bg);border-bottom:1px solid var(--border);padding:18px 0;position:sticky;top:0;z-index:100;transition:background .25s;}
+.header-inner{max-width:900px;margin:0 auto;padding:0 18px;display:flex;align-items:center;gap:14px;}
+.logo-badge{width:40px;height:40px;background:linear-gradient(135deg,var(--green),var(--green2));border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.header-title{font-size:17px;font-weight:600;}
+.header-sub{font-size:11px;color:var(--text2);margin-top:2px;}
+.header-actions{margin-left:auto;display:flex;gap:8px;}
+.hdr-btn{width:36px;height:36px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--bg3);color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:17px;transition:all .15s;flex-shrink:0;}
+.hdr-btn:hover{border-color:var(--green);color:var(--green);}
+/* ── CALCULADORA FLUTUANTE ── */
+.calc-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;align-items:center;justify-content:center;}
+.calc-overlay.open{display:flex;}
+.calc-modal{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:0;width:320px;max-width:95vw;box-shadow:0 20px 60px rgba(0,0,0,.5);overflow:hidden;}
+.calc-modal-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border);background:var(--bg3);}
+.calc-modal-title{font-size:14px;font-weight:600;}
+.calc-close{background:none;border:none;color:var(--text2);font-size:20px;cursor:pointer;line-height:1;padding:2px 6px;border-radius:4px;}
+.calc-close:hover{color:var(--text);}
+.calc-display{background:var(--bg);padding:16px;text-align:right;border-bottom:1px solid var(--border);}
+.calc-expr{font-size:12px;color:var(--text3);font-family:'DM Mono',monospace;min-height:18px;margin-bottom:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.calc-val{font-family:'DM Mono',monospace;font-size:28px;font-weight:500;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.calc-keys{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);}
+.calc-key{padding:16px 8px;font-size:16px;font-family:'DM Mono',monospace;font-weight:500;border:none;background:var(--bg2);color:var(--text);cursor:pointer;transition:background .1s;text-align:center;}
+.calc-key:hover{background:var(--bg3);}
+.calc-key:active{background:var(--border2);}
+.calc-key.op{color:var(--amber);}
+.calc-key.fn{color:var(--text2);font-size:13px;}
+.calc-key.eq{background:var(--green);color:#fff;font-size:20px;}
+.calc-key.eq:hover{background:var(--green2);}
+.calc-key.zero{grid-column:span 2;}
+main{max-width:900px;margin:0 auto;padding:22px 16px 80px;}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:14px;}
+.card-title{font-size:12px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px;display:flex;align-items:center;gap:7px;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+@media(max-width:560px){.grid2{grid-template-columns:1fr;}}
+label{display:block;font-size:12px;color:var(--text2);margin-bottom:4px;font-weight:500;}
+input[type=text],input[type=number],select{width:100%;padding:9px 11px;font-size:14px;font-family:'DM Sans',sans-serif;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg3);color:var(--text);outline:none;transition:border-color .15s;-webkit-appearance:none;}
+input:focus,select:focus{border-color:var(--green);}
+input[type=number]{font-family:'DM Mono',monospace;}
+input.filled{border-color:var(--green2);background:#0A1E15;}
+select option{background:var(--bg2);}
+.toggle-group{display:flex;gap:6px;}
+.toggle-btn{flex:1;padding:9px 12px;font-size:13px;font-family:'DM Sans',sans-serif;font-weight:500;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg3);color:var(--text2);cursor:pointer;transition:all .15s;}
+.toggle-btn.active{background:var(--green-bg);border-color:var(--green);color:var(--green);}
+.info-box{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 11px;font-size:12px;color:var(--text2);margin-top:10px;line-height:1.6;}
+.info-box.green{border-color:var(--green2);background:var(--green-bg);color:#4EDBA3;}
+.info-box.amber{border-color:var(--amber-bg);background:var(--amber-bg);color:var(--amber);}
+.info-box.blue{border-color:#1E3A5A;background:var(--blue-bg);color:var(--blue);}
+.info-box.red{border-color:#5A1A1A;background:var(--red-bg);color:var(--red);}
+.slider-row{display:flex;align-items:center;gap:12px;margin-top:6px;}
+input[type=range]{flex:1;-webkit-appearance:none;height:4px;background:var(--border2);border-radius:4px;outline:none;cursor:pointer;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--green);border:2px solid var(--bg);box-shadow:0 0 0 3px rgba(34,201,139,.2);cursor:pointer;}
+.slider-val{font-family:'DM Mono',monospace;font-size:20px;font-weight:500;color:var(--green);min-width:56px;text-align:right;}
+.calc-btn{width:100%;padding:14px;font-size:15px;font-family:'DM Sans',sans-serif;font-weight:600;background:linear-gradient(135deg,var(--green),var(--green2));color:#fff;border:none;border-radius:var(--radius);cursor:pointer;transition:all .15s;box-shadow:0 4px 20px rgba(34,201,139,.25);margin-top:4px;}
+.calc-btn:hover{transform:translateY(-1px);box-shadow:0 6px 28px rgba(34,201,139,.35);}
+.divider{height:1px;background:var(--border);margin:24px 0;}
+.section-heading{font-size:15px;font-weight:600;color:var(--text);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(125px,1fr));gap:8px;}
+.metric{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:11px 13px;}
+.metric.hl-green{border-color:var(--green2);background:var(--green-bg);}
+.metric.hl-amber{border-color:#5A3A00;background:var(--amber-bg);}
+.metric.hl-red{border-color:#5A1A1A;background:var(--red-bg);}
+.metric.hl-blue{border-color:#1E3A5A;background:var(--blue-bg);}
+.metric-label{font-size:11px;color:var(--text2);margin-bottom:3px;}
+.metric-value{font-family:'DM Mono',monospace;font-size:14px;font-weight:500;}
+.metric-value.green{color:var(--green);}.metric-value.blue{color:var(--blue);}.metric-value.red{color:var(--red);}.metric-value.amber{color:var(--amber);}
+.tax-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;gap:10px;}
+.tax-row:last-child{border-bottom:none;}
+.tax-row-label{color:var(--text2);}
+.tax-row-value{font-family:'DM Mono',monospace;font-weight:500;flex-shrink:0;}
+.tax-row.total .tax-row-label{color:var(--text);font-weight:600;}
+.tax-row.total .tax-row-value{color:var(--red);}
+.price-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:12px;}
+.price-card.green-card{border-color:var(--green2);}
+.price-card.blue-card{border-color:#1E3A5A;}
+.price-card-header{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap;}
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;padding:4px 11px;border-radius:20px;}
+.badge-green{background:var(--green-bg);color:var(--green);border:1px solid var(--green2);}
+.badge-blue{background:var(--blue-bg);color:var(--blue);border:1px solid #1E3A5A;}
+.badge-winner{background:var(--green);color:#fff;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;}
+.formula-box{font-family:'DM Mono',monospace;font-size:12px;color:var(--text3);background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 11px;margin-top:10px;}
+.search-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+@media(max-width:400px){.search-grid{grid-template-columns:1fr;}}
+.search-btn{padding:10px 12px;font-size:13px;font-family:'DM Sans',sans-serif;font-weight:500;background:var(--bg3);color:var(--text);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;}
+.search-btn:hover{border-color:var(--border2);}
+footer{text-align:center;padding:20px;font-size:11px;color:var(--text3);border-top:1px solid var(--border);}
+#results{display:none;}
+#offline-banner{display:none;background:var(--amber-bg);color:var(--amber);text-align:center;font-size:12px;padding:8px;border-bottom:1px solid #5A3A00;}
+/* XML */
+.xml-drop-area{border:2px dashed var(--border2);border-radius:var(--radius);padding:28px 20px;text-align:center;cursor:pointer;transition:all .2s;background:var(--bg3);position:relative;}
+.xml-drop-area:hover,.xml-drop-area.dragover{border-color:var(--green);background:var(--green-bg);}
+.xml-drop-icon{font-size:32px;margin-bottom:8px;}
+.xml-drop-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px;}
+.xml-drop-sub{font-size:12px;color:var(--text2);}
+.xml-drop-area input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.xml-status{display:none;margin-top:10px;padding:10px 12px;border-radius:var(--radius-sm);font-size:13px;font-weight:500;line-height:1.5;}
+.xml-status.ok{background:var(--green-bg);color:var(--green);border:1px solid var(--green2);}
+.xml-status.err{background:var(--red-bg);color:var(--red);border:1px solid #5A1A1A;}
+.prod-table-wrap{overflow-x:auto;margin-top:12px;}
+.prod-table{width:100%;border-collapse:collapse;font-size:13px;}
+.prod-table th{background:var(--bg3);color:var(--text2);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.05em;padding:8px 10px;border-bottom:1px solid var(--border);text-align:left;white-space:nowrap;}
+.prod-table td{padding:9px 10px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle;}
+.prod-table tr:last-child td{border-bottom:none;}
+.prod-table tr.selected td{background:var(--green-bg);}
+.prod-table tr{cursor:pointer;transition:background .1s;}
+.prod-table tr:hover td{background:var(--bg3);}
+.prod-table tr.selected:hover td{background:var(--green-bg);}
+.sel-dot{width:10px;height:10px;border-radius:50%;border:2px solid var(--border2);display:inline-block;transition:all .15s;}
+.prod-table tr.selected .sel-dot{background:var(--green);border-color:var(--green);}
+.tag-ncm{font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);background:var(--bg);padding:2px 6px;border-radius:4px;}
+.section-divider{display:flex;align-items:center;gap:10px;margin:18px 0 14px;}
+.section-divider span{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;white-space:nowrap;}
+.section-divider::before,.section-divider::after{content:'';flex:1;height:1px;background:var(--border);}
+.debug-box{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;font-size:11px;font-family:'DM Mono',monospace;color:var(--text3);margin-top:8px;max-height:120px;overflow-y:auto;display:none;}
 </style>
 </head>
 <body>
+
+<div id="offline-banner">📶 Offline — app funcionando normalmente!</div>
 
 <header>
   <div class="header-inner">
     <div class="logo-badge">📊</div>
     <div>
-      <div class="header-title">Calculadora de Impostos & Precificação</div>
-      <div class="header-sub">MEI · Simples Nacional · Importação · DIFAL · Mark-up vs Margem</div>
+      <div class="header-title">Calculadora de Impostos</div>
+      <div class="header-sub">MEI · Simples Nacional · NF-e XML · Mark-up vs Margem</div>
+    </div>
+    <div class="header-actions">
+      <button class="hdr-btn" id="themeBtn" onclick="toggleTheme()" title="Alternar tema claro/escuro">🌙</button>
+      <button class="hdr-btn" onclick="openCalc()" title="Calculadora">🧮</button>
     </div>
   </div>
 </header>
 
+<!-- CALCULADORA FLUTUANTE -->
+<div class="calc-overlay" id="calcOverlay" onclick="closeCalcOutside(event)">
+  <div class="calc-modal">
+    <div class="calc-modal-header">
+      <span class="calc-modal-title">🧮 Calculadora</span>
+      <button class="calc-close" onclick="closeCalc()">✕</button>
+    </div>
+    <div class="calc-display">
+      <div class="calc-expr" id="cExpr"></div>
+      <div class="calc-val" id="cVal">0</div>
+    </div>
+    <div class="calc-keys">
+      <button class="calc-key fn" onclick="cFn('AC')">AC</button>
+      <button class="calc-key fn" onclick="cFn('+/-')">+/−</button>
+      <button class="calc-key fn" onclick="cFn('%')">%</button>
+      <button class="calc-key op" onclick="cOp('÷')">÷</button>
+
+      <button class="calc-key" onclick="cNum('7')">7</button>
+      <button class="calc-key" onclick="cNum('8')">8</button>
+      <button class="calc-key" onclick="cNum('9')">9</button>
+      <button class="calc-key op" onclick="cOp('×')">×</button>
+
+      <button class="calc-key" onclick="cNum('4')">4</button>
+      <button class="calc-key" onclick="cNum('5')">5</button>
+      <button class="calc-key" onclick="cNum('6')">6</button>
+      <button class="calc-key op" onclick="cOp('−')">−</button>
+
+      <button class="calc-key" onclick="cNum('1')">1</button>
+      <button class="calc-key" onclick="cNum('2')">2</button>
+      <button class="calc-key" onclick="cNum('3')">3</button>
+      <button class="calc-key op" onclick="cOp('+')">+</button>
+
+      <button class="calc-key zero" onclick="cNum('0')">0</button>
+      <button class="calc-key" onclick="cNum('.')">.</button>
+      <button class="calc-key eq" onclick="cEquals()">=</button>
+    </div>
+  </div>
+</div>
+
 <main>
 
-  <!-- REGIME TRIBUTÁRIO -->
+  <!-- REGIME -->
   <div class="card">
-    <div class="card-title"><span class="icon">🏛</span> Regime Tributário</div>
+    <div class="card-title">🏛 Regime Tributário</div>
     <div class="toggle-group">
       <button class="toggle-btn active" id="btnMei" onclick="setRegime('mei')">MEI</button>
       <button class="toggle-btn" id="btnSN" onclick="setRegime('sn')">Simples Nacional</button>
     </div>
-    <div id="infoRegime" class="info-box green">
-      MEI: isento de IRPJ, CSLL, PIS, COFINS e IPI. Paga apenas o DAS fixo mensal. Limite anual: R$ 81.000.
+    <div id="infoRegime" class="info-box green">MEI: isento de IRPJ, CSLL, PIS, COFINS e IPI. Paga apenas o DAS fixo mensal. Limite anual: R$ 81.000.</div>
+  </div>
+
+  <!-- XML NF-e -->
+  <div class="card">
+    <div class="card-title">📄 Importar XML de NF-e <span style="font-size:10px;background:var(--green-bg);color:var(--green);padding:2px 8px;border-radius:20px;margin-left:4px;">AUTOMÁTICO</span></div>
+    <div class="xml-drop-area" id="dropArea">
+      <input type="file" accept=".xml,text/xml,application/xml" id="xmlInput" onchange="handleXMLFile(this.files[0])">
+      <div class="xml-drop-icon">📂</div>
+      <div class="xml-drop-title">Arraste o XML da NF-e aqui</div>
+      <div class="xml-drop-sub">ou toque/clique para selecionar · arquivo .xml da SEFAZ</div>
+    </div>
+    <div class="xml-status" id="xmlStatus"></div>
+    <div id="debugBox" class="debug-box"></div>
+    <div id="prodTableWrap" style="display:none">
+      <div style="font-size:12px;color:var(--text2);margin-top:14px;margin-bottom:6px;">👆 Toque no produto para preencher os campos automaticamente:</div>
+      <div class="prod-table-wrap">
+        <table class="prod-table" id="prodTable">
+          <thead><tr>
+            <th></th><th>Produto</th><th>NCM</th><th>Qtd</th>
+            <th>Vl. Unit.</th><th>Total</th><th>ICMS%</th><th>IPI%</th>
+          </tr></thead>
+          <tbody id="prodTableBody"></tbody>
+        </table>
+      </div>
+      <div class="info-box blue" id="nfeResumo" style="margin-top:10px;"></div>
     </div>
   </div>
+
+  <div class="section-divider"><span>ou preencha manualmente</span></div>
 
   <!-- PRODUTO -->
   <div class="card">
-    <div class="card-title"><span class="icon">📦</span> Produto</div>
+    <div class="card-title">📦 Produto</div>
     <div class="grid2">
-      <div>
-        <label>Nome do produto</label>
-        <input type="text" id="nomeProduto" placeholder="Ex: Smartwatch XY Pro">
-      </div>
-      <div>
-        <label>Valor de compra unitário (R$)</label>
-        <input type="number" id="valorCompra" placeholder="0,00" min="0" step="0.01">
-      </div>
+      <div><label>Nome do produto</label><input type="text" id="nomeProduto" placeholder="Ex: Smartwatch XY Pro"></div>
+      <div><label>Valor de compra unitário (R$)</label><input type="number" id="valorCompra" placeholder="0,00" min="0" step="0.01"></div>
     </div>
-    <div class="grid2" style="margin-top:12px">
-      <div>
-        <label>Quantidade comprada (unidades)</label>
-        <input type="number" id="qtdComprada" placeholder="1" min="1" value="1">
-      </div>
-      <div>
-        <label>Custo adicional/unidade — embalagem, etc. (R$)</label>
-        <input type="number" id="custoProd" placeholder="0,00" min="0" step="0.01" value="0">
-      </div>
+    <div class="grid2" style="margin-top:10px">
+      <div><label>Quantidade comprada</label><input type="number" id="qtdComprada" placeholder="1" min="1" value="1"></div>
+      <div><label>Custo adicional/un. — embalagem, etc. (R$)</label><input type="number" id="custoProd" placeholder="0,00" min="0" step="0.01" value="0"></div>
     </div>
   </div>
 
-  <!-- ORIGEM E DESTINO -->
+  <!-- ORIGEM -->
   <div class="card">
-    <div class="card-title"><span class="icon">🌎</span> Origem e Destino</div>
+    <div class="card-title">🌎 Origem e Destino</div>
     <div class="grid2">
       <div>
         <label>País de origem</label>
@@ -447,444 +263,604 @@
         <input type="number" id="iiPct" placeholder="20" min="0" max="100" step="0.01" value="20">
       </div>
     </div>
-    <div class="grid2" style="margin-top:12px">
-      <div>
-        <label>Estado de origem (remetente)</label>
-        <select id="estadoOrigem" onchange="updateDifal()"></select>
-      </div>
-      <div>
-        <label>Estado de destino (destinatário)</label>
-        <select id="estadoDestino" onchange="updateDifal()"></select>
-      </div>
+    <div class="grid2" style="margin-top:10px">
+      <div><label>Estado de origem</label><select id="estadoOrigem" onchange="updateDifal()"></select></div>
+      <div><label>Estado de destino</label><select id="estadoDestino" onchange="updateDifal()"></select></div>
     </div>
     <div id="difal-info" class="info-box"></div>
   </div>
 
   <!-- FRETE -->
   <div class="card">
-    <div class="card-title"><span class="icon">🚚</span> Frete</div>
+    <div class="card-title">🚚 Frete</div>
     <div class="toggle-group">
       <button class="toggle-btn active" id="btnFreteN" onclick="setFrete(false)">Sem frete</button>
       <button class="toggle-btn" id="btnFreteS" onclick="setFrete(true)">Com frete</button>
     </div>
-    <div id="freteValor" style="display:none; margin-top:12px">
-      <label>Valor total do frete (R$) — será rateado entre as unidades</label>
+    <div id="freteValor" style="display:none;margin-top:10px">
+      <label>Valor total do frete (R$) — rateado pelas unidades</label>
       <input type="number" id="valorFrete" placeholder="0,00" min="0" step="0.01">
     </div>
   </div>
 
   <!-- MARGEM -->
   <div class="card">
-    <div class="card-title"><span class="icon">📈</span> Margem de Lucro Desejada</div>
+    <div class="card-title">📈 Margem de Lucro Desejada</div>
     <div class="slider-row">
       <input type="range" id="lucroSlider" min="5" max="300" value="40" step="1" oninput="updateSlider()">
       <span class="slider-val" id="lucroVal">40%</span>
     </div>
-    <div class="info-box">Arraste para definir a margem. O sistema calculará automaticamente Mark-up e Margem de Lucro e apontará qual é mais vantajoso.</div>
+    <div class="info-box">Arraste para definir a margem. Mark-up e Margem de Lucro serão calculados e comparados automaticamente.</div>
   </div>
 
-  <!-- BOTÃO -->
   <button class="calc-btn" onclick="calcular()">⚡ Calcular Impostos e Preço de Venda</button>
 
   <!-- RESULTADOS -->
   <div id="results">
-
     <div class="divider"></div>
-
-    <!-- CUSTO UNITÁRIO -->
     <div class="section-heading">📦 Custo por Unidade</div>
-    <div class="card" style="margin-bottom:16px">
-      <div class="metrics" id="custosGrid"></div>
-    </div>
-
-    <!-- IMPOSTOS -->
-    <div class="section-heading">🧾 Impostos Incidentes</div>
-    <div class="card">
-      <div class="tax-rows" id="impostosRows"></div>
-    </div>
-
-    <!-- COMPARATIVO DE PREÇOS -->
+    <div class="card"><div class="metrics" id="custosGrid"></div></div>
+    <div class="section-heading" style="margin-top:16px">🧾 Impostos Incidentes</div>
+    <div class="card"><div id="impostosRows"></div></div>
     <div class="divider"></div>
     <div class="section-heading">💰 Preço de Venda — Comparativo</div>
-
-    <div class="price-card green-card" id="cardMarkup">
-      <div class="price-card-header">
-        <span class="badge badge-green">📐 Mark-up</span>
-        <span id="tagMarkup"></span>
-      </div>
+    <div class="price-card green-card">
+      <div class="price-card-header"><span class="badge badge-green">📐 Mark-up</span><span id="tagMarkup"></span></div>
       <div class="metrics" id="markupGrid"></div>
       <div class="formula-box" id="formulaMarkup"></div>
     </div>
-
-    <div class="price-card blue-card" id="cardMargem">
-      <div class="price-card-header">
-        <span class="badge badge-blue">📊 Margem de Lucro</span>
-        <span id="tagMargem"></span>
-      </div>
+    <div class="price-card blue-card">
+      <div class="price-card-header"><span class="badge badge-blue">📊 Margem de Lucro</span><span id="tagMargem"></span></div>
       <div class="metrics" id="margemGrid"></div>
       <div class="formula-box" id="formulaMargem"></div>
     </div>
-
-    <!-- COMPARATIVO RESUMO -->
-    <div class="card" id="resumoComparativo" style="margin-top:4px">
+    <div class="card">
       <div class="card-title">🔍 Resumo Comparativo</div>
-      <div class="tax-rows" id="resumoRows"></div>
+      <div id="resumoRows"></div>
       <div class="info-box" id="resumoTexto"></div>
     </div>
-
-    <!-- BUSCA NA INTERNET -->
     <div class="divider"></div>
-    <div class="section-heading" id="buscaTitulo">🔍 Verificar Preço na Internet</div>
-    <div class="card" id="busca-section">
-      <p style="font-size:13px;color:var(--text2);margin-bottom:12px">Pesquise <strong id="nomeBuscaLabel" style="color:var(--text)"></strong> e compare com o preço de mercado:</p>
+    <div class="section-heading">🔍 Verificar Preço na Internet</div>
+    <div class="card">
+      <p style="font-size:13px;color:var(--text2);margin-bottom:10px">Pesquise <strong id="nomeBuscaLabel" style="color:var(--text)"></strong> e compare com o mercado:</p>
       <div class="search-grid" id="buscaBtns"></div>
     </div>
-
-  </div><!-- /results -->
+  </div>
 
 </main>
-
-<footer>
-  Calculadora de Impostos & Precificação · Desenvolvido para uso comercial brasileiro<br>
-  MEI e Simples Nacional (Anexo I — Comércio) · Consulte sempre seu contador para decisões fiscais
-</footer>
+<footer>Calculadora de Impostos & Precificação · MEI e Simples Nacional (Anexo I)<br>Consulte sempre seu contador para decisões fiscais</footer>
 
 <script>
-// ──────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════
 // DADOS
-// ──────────────────────────────────────────────
-const ICMS = {
-  AC:17, AL:12, AM:12, AP:12, BA:20.5, CE:20, DF:20, ES:17,
-  GO:19, MA:20, MG:18, MS:17, MT:17, PA:19, PB:18, PE:18,
-  PI:21, PR:19.5, RJ:22, RN:18, RO:17.5, RS:17, SC:17,
-  SE:18, SP:18, TO:20, RR:17
-};
-const ESTADOS = ["AC","AL","AM","AP","BA","CE","DF","ES","GO","MA","MG",
-  "MS","MT","PA","PB","PE","PI","PR","RJ","RN","RO","RS","SC","SE","SP","TO","RR"];
+// ═══════════════════════════════════════════════════════
+const ICMS={AC:17,AL:12,AM:12,AP:12,BA:20.5,CE:20,DF:20,ES:17,GO:19,MA:20,MG:18,MS:17,MT:17,PA:19,PB:18,PE:18,PI:21,PR:19.5,RJ:22,RN:18,RO:17.5,RS:17,SC:17,SE:18,SP:18,TO:20,RR:17};
+const ESTADOS=["AC","AL","AM","AP","BA","CE","DF","ES","GO","MA","MG","MS","MT","PA","PB","PE","PI","PR","RJ","RN","RO","RS","SC","SE","SP","TO","RR"];
+const IBGE_UF={"11":"RO","12":"AC","13":"AM","14":"RR","15":"PA","16":"AP","17":"TO","21":"MA","22":"PI","23":"CE","24":"RN","25":"PB","26":"PE","27":"AL","28":"SE","29":"BA","31":"MG","32":"ES","33":"RJ","35":"SP","41":"PR","42":"SC","43":"RS","50":"MS","51":"MT","52":"GO","53":"DF"};
 
-// Alíquotas interestaduais (sul/sudeste → outras regiões = 7%; demais = 12%)
-function getInter(orig, dest) {
-  const sudesteSul = ['SP','RJ','MG','ES','RS','SC','PR'];
-  if (sudesteSul.includes(orig) && !sudesteSul.includes(dest)) return 7;
-  return 12;
-}
+let regime='mei', temFrete=false, nfeProdutos=[], selectedProdIdx=-1;
 
-// ──────────────────────────────────────────────
-// ESTADO DA UI
-// ──────────────────────────────────────────────
-let regime = 'mei';
-let temFrete = false;
+function getInter(o,d){const s=['SP','RJ','MG','ES','RS','SC','PR'];return(s.includes(o)&&!s.includes(d))?7:12;}
 
-// ──────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════
 // INIT
-// ──────────────────────────────────────────────
-(function init() {
-  const orSelect = document.getElementById('estadoOrigem');
-  const dtSelect = document.getElementById('estadoDestino');
-  ESTADOS.forEach(e => {
-    const o1 = new Option(e, e);
-    const o2 = new Option(e, e);
-    if (e === 'SP') o1.selected = true;
-    if (e === 'RJ') o2.selected = true;
-    orSelect.appendChild(o1);
-    dtSelect.appendChild(o2);
+// ═══════════════════════════════════════════════════════
+(function init(){
+  ['estadoOrigem','estadoDestino'].forEach((id,i)=>{
+    const sel=document.getElementById(id);
+    ESTADOS.forEach(e=>{const o=new Option(e,e);if(i===0&&e==='SP')o.selected=true;if(i===1&&e==='RJ')o.selected=true;sel.appendChild(o);});
   });
   updateDifal();
+  // drag & drop
+  const da=document.getElementById('dropArea');
+  da.addEventListener('dragover',e=>{e.preventDefault();da.classList.add('dragover');});
+  da.addEventListener('dragleave',()=>da.classList.remove('dragover'));
+  da.addEventListener('drop',e=>{
+    e.preventDefault();da.classList.remove('dragover');
+    const f=e.dataTransfer.files[0];
+    if(f)handleXMLFile(f);
+  });
 })();
 
-// ──────────────────────────────────────────────
-// HANDLERS
-// ──────────────────────────────────────────────
-function setRegime(r) {
-  regime = r;
-  document.getElementById('btnMei').className = 'toggle-btn' + (r==='mei'?' active':'');
-  document.getElementById('btnSN').className  = 'toggle-btn' + (r==='sn' ?' active':'');
-  const box = document.getElementById('infoRegime');
-  if (r === 'mei') {
-    box.textContent = 'MEI: isento de IRPJ, CSLL, PIS, COFINS e IPI. Paga apenas o DAS fixo mensal. Limite anual: R$ 81.000.';
-    box.className = 'info-box green';
-  } else {
-    box.textContent = 'Simples Nacional: alíquota efetiva conforme faixa de faturamento (Anexo I — Comércio: 4% a 11,61%). Inclui IRPJ, CSLL, PIS, COFINS, CPP e ICMS.';
-    box.className = 'info-box amber';
+// ═══════════════════════════════════════════════════════
+// XML NF-e — PARSER ROBUSTO
+// ═══════════════════════════════════════════════════════
+function handleXMLFile(file){
+  if(!file){showXMLStatus('Nenhum arquivo selecionado.','err');return;}
+  if(!file.name.toLowerCase().endsWith('.xml')){
+    showXMLStatus('Arquivo inválido. Selecione um arquivo .xml exportado da NF-e.','err');return;
+  }
+  const reader=new FileReader();
+  reader.onload=e=>parseNFe(e.target.result);
+  reader.onerror=()=>showXMLStatus('Erro ao ler o arquivo. Tente novamente.','err');
+  reader.readAsText(file,'UTF-8');
+}
+
+// Busca um elemento pelo nome local, ignorando namespace — funciona com qualquer versão de NF-e
+function getEl(root, localName){
+  // getElementsByTagNameNS com wildcard é o mais robusto
+  const r=root.getElementsByTagNameNS('*', localName);
+  return r.length>0 ? r[0] : null;
+}
+function getEls(root, localName){
+  return Array.from(root.getElementsByTagNameNS('*', localName));
+}
+function txt(root, localName){
+  const el=getEl(root, localName);
+  return el ? el.textContent.trim() : '';
+}
+
+function parseNFe(xmlStr){
+  const debug=[];
+  try{
+    // Remove BOM se existir
+    const clean=xmlStr.replace(/^\uFEFF/,'').trim();
+    debug.push('Tamanho: '+clean.length+' chars');
+
+    const parser=new DOMParser();
+    const doc=parser.parseFromString(clean,'text/xml');
+
+    // Verifica erro de parsing
+    const parseErr=doc.querySelector('parsererror') || doc.getElementsByTagName('parsererror')[0];
+    if(parseErr){
+      debug.push('Erro parser: '+parseErr.textContent.substring(0,100));
+      showDebug(debug);
+      showXMLStatus('XML inválido ou corrompido. Verifique se o arquivo é uma NF-e da SEFAZ.\n\nDetalhe: '+parseErr.textContent.substring(0,120),'err');
+      return;
+    }
+
+    // Raiz
+    const root=doc.documentElement;
+    debug.push('Root: '+root.localName);
+
+    // infNFe
+    const infNFe=getEl(doc,'infNFe');
+    if(!infNFe){
+      debug.push('infNFe não encontrado');
+      showDebug(debug);
+      showXMLStatus('Estrutura de NF-e não encontrada. Este XML não parece ser uma NF-e válida da SEFAZ.','err');
+      return;
+    }
+    debug.push('infNFe: OK');
+
+    // ── Identificação ──
+    const ide=getEl(doc,'ide');
+    const nNF   = ide ? txt(ide,'nNF')   : txt(doc,'nNF');
+    const serie = ide ? txt(ide,'serie') : txt(doc,'serie');
+    const dhEmi = ide ? (txt(ide,'dhEmi')||txt(ide,'dEmi')) : '';
+    debug.push('NF: '+nNF+' série '+serie);
+
+    // ── Emitente → UF de origem ──
+    const emit=getEl(doc,'emit');
+    let ufEmit='SP';
+    if(emit){
+      // Tenta enderEmit/UF primeiro, depois cUF via IBGE
+      const enderEmit=getEl(emit,'enderEmit');
+      if(enderEmit){
+        const uf=txt(enderEmit,'UF');
+        if(uf&&ESTADOS.includes(uf))ufEmit=uf;
+      }
+      if(ufEmit==='SP'){
+        const cUF=txt(emit,'cUF');
+        if(cUF&&IBGE_UF[cUF])ufEmit=IBGE_UF[cUF];
+      }
+    }
+    debug.push('UF emitente: '+ufEmit);
+
+    // ── Destinatário → UF de destino ──
+    const dest=getEl(doc,'dest');
+    let ufDest='RJ';
+    if(dest){
+      const enderDest=getEl(dest,'enderDest');
+      if(enderDest){
+        const uf=txt(enderDest,'UF');
+        if(uf&&ESTADOS.includes(uf))ufDest=uf;
+      }
+    }
+    debug.push('UF dest: '+ufDest);
+
+    // ── Frete ──
+    // vFrete pode estar em ICMSTot ou diretamente
+    const total=getEl(doc,'ICMSTot');
+    const vFrete=parseFloat((total?txt(total,'vFrete'):txt(doc,'vFrete'))||'0')||0;
+    debug.push('Frete: R$'+vFrete);
+
+    // ── Produtos ──
+    const dets=getEls(doc,'det');
+    debug.push('Itens (det): '+dets.length);
+
+    if(!dets.length){
+      showDebug(debug);
+      showXMLStatus('Nenhum item (det) encontrado na NF-e. Verifique se o arquivo está completo.','err');
+      return;
+    }
+
+    nfeProdutos=[];
+    for(const det of dets){
+      const prod=getEl(det,'prod');
+      const imposto=getEl(det,'imposto');
+      if(!prod)continue;
+
+      const xProd = txt(prod,'xProd');
+      const NCM   = txt(prod,'NCM');
+      const qCom  = parseFloat(txt(prod,'qCom'))||1;
+      const vUnCom= parseFloat(txt(prod,'vUnCom'))||0;
+      const vProd = parseFloat(txt(prod,'vProd'))||0;
+
+      // ── ICMS ──
+      // pICMS pode estar dentro de ICMS00, ICMS10, ICMS20, ICMS51, ICMS70, ICMS90...
+      let icmsPct=0;
+      if(imposto){
+        const icmsGroup=getEl(imposto,'ICMS');
+        if(icmsGroup){
+          // Pega o primeiro filho com pICMS
+          const pICMSEl=getEl(icmsGroup,'pICMS');
+          if(pICMSEl)icmsPct=parseFloat(pICMSEl.textContent)||0;
+        }
+      }
+      // Fallback: alíquota interna do estado emitente
+      if(!icmsPct)icmsPct=ICMS[ufEmit]||18;
+
+      // ── IPI ──
+      let ipiPct=0;
+      if(imposto){
+        const ipiGroup=getEl(imposto,'IPI');
+        if(ipiGroup){
+          const pIPIEl=getEl(ipiGroup,'pIPI');
+          if(pIPIEl)ipiPct=parseFloat(pIPIEl.textContent)||0;
+        }
+      }
+
+      // ── PIS ──
+      let pisPct=0;
+      if(imposto){
+        const pisGroup=getEl(imposto,'PIS');
+        if(pisGroup){const p=getEl(pisGroup,'pPIS');if(p)pisPct=parseFloat(p.textContent)||0;}
+      }
+
+      // ── COFINS ──
+      let cofinsPct=0;
+      if(imposto){
+        const cofGroup=getEl(imposto,'COFINS');
+        if(cofGroup){const p=getEl(cofGroup,'pCOFINS');if(p)cofinsPct=parseFloat(p.textContent)||0;}
+      }
+
+      debug.push(`  "${xProd}" | R$${vUnCom} x${qCom} | ICMS${icmsPct}% IPI${ipiPct}%`);
+      nfeProdutos.push({xProd,NCM,qCom,vUnCom,vProd,icmsPct,ipiPct,pisPct,cofinsPct,ufEmit,ufDest,vFrete});
+    }
+
+    if(!nfeProdutos.length){
+      showDebug(debug);
+      showXMLStatus('Produtos encontrados mas sem dados válidos. Verifique o arquivo.','err');
+      return;
+    }
+
+    // ── Aplica estados ──
+    setSelectValue('estadoOrigem',ufEmit);
+    setSelectValue('estadoDestino',ufDest);
+    updateDifal();
+
+    // ── Aplica frete ──
+    if(vFrete>0){setFrete(true);setField('valorFrete',vFrete.toFixed(2));}
+
+    // ── Renderiza tabela ──
+    renderProdTable();
+    document.getElementById('prodTableWrap').style.display='block';
+
+    let dataStr='';
+    try{dataStr=dhEmi?new Date(dhEmi).toLocaleDateString('pt-BR'):'';}catch(e){}
+
+    document.getElementById('nfeResumo').innerHTML=
+      `📄 NF-e <strong>nº ${nNF}</strong> · Série ${serie}${dataStr?' · Emissão '+dataStr:''} · `+
+      `<strong>${nfeProdutos.length}</strong> produto(s) · `+
+      `${ufEmit} → ${ufDest}`+
+      (vFrete>0?` · Frete: R$ ${vFrete.toFixed(2)}`:'');
+
+    showXMLStatus(`✓ NF-e lida com sucesso — ${nfeProdutos.length} produto(s). Toque em um produto na tabela para preencher os campos.`,'ok');
+    showDebug([]); // limpa debug em caso de sucesso
+
+  }catch(e){
+    debug.push('EXCEÇÃO: '+e.message);
+    showDebug(debug);
+    showXMLStatus('Erro inesperado ao processar o XML.\n\nDetalhe: '+e.message,'err');
   }
 }
 
-function setFrete(s) {
-  temFrete = s;
-  document.getElementById('btnFreteN').className = 'toggle-btn' + (!s?' active':'');
-  document.getElementById('btnFreteS').className = 'toggle-btn' + ( s?' active':'');
-  document.getElementById('freteValor').style.display = s ? 'block' : 'none';
-}
-
-function toggleImport() {
-  const p = document.getElementById('paisOrigem').value;
-  document.getElementById('divII').style.display = p !== 'BR' ? 'block' : 'none';
-}
-
-function updateSlider() {
-  document.getElementById('lucroVal').textContent =
-    document.getElementById('lucroSlider').value + '%';
-}
-
-function updateDifal() {
-  const orig = document.getElementById('estadoOrigem').value;
-  const dest = document.getElementById('estadoDestino').value;
-  const iOrig = ICMS[orig] || 18;
-  const iDest = ICMS[dest] || 18;
-  const inter = getInter(orig, dest);
-  const difal = iDest - inter;
-  const box = document.getElementById('difal-info');
-  if (orig === dest) {
-    box.textContent = `Operação interna (${orig}): ICMS ${iOrig}% sobre o valor da operação.`;
-    box.className = 'info-box';
-  } else {
-    box.innerHTML = `ICMS interestadual: <strong>${inter}%</strong> pago na origem (${orig}).
-      DIFAL: <strong>${difal.toFixed(1)}%</strong> = diferença entre ${iDest}% (${dest}) e ${inter}% interestadual.`;
-    box.className = difal > 0 ? 'info-box amber' : 'info-box';
-  }
-}
-
-// ──────────────────────────────────────────────
-// FORMATAÇÃO
-// ──────────────────────────────────────────────
-function fmt(v) {
-  return 'R$ ' + parseFloat(v).toLocaleString('pt-BR', {
-    minimumFractionDigits: 2, maximumFractionDigits: 2
+function renderProdTable(){
+  const tbody=document.getElementById('prodTableBody');
+  tbody.innerHTML='';
+  nfeProdutos.forEach((p,i)=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`
+      <td><span class="sel-dot"></span></td>
+      <td style="max-width:160px;word-break:break-word">${p.xProd}</td>
+      <td><span class="tag-ncm">${p.NCM||'—'}</span></td>
+      <td>${Number.isInteger(p.qCom)?p.qCom:p.qCom.toFixed(2)}</td>
+      <td>R$ ${p.vUnCom.toFixed(2)}</td>
+      <td>R$ ${p.vProd.toFixed(2)}</td>
+      <td>${p.icmsPct.toFixed(1)}%</td>
+      <td>${p.ipiPct.toFixed(1)}%</td>
+    `;
+    tr.onclick=()=>selectProd(i);
+    tbody.appendChild(tr);
   });
 }
-function fmtPct(v) {
-  return parseFloat(v).toLocaleString('pt-BR', {
-    minimumFractionDigits: 1, maximumFractionDigits: 2
-  }) + '%';
+
+function selectProd(i){
+  selectedProdIdx=i;
+  document.querySelectorAll('#prodTableBody tr').forEach((r,idx)=>r.classList.toggle('selected',idx===i));
+  const p=nfeProdutos[i];
+  setField('nomeProduto',p.xProd);
+  setField('valorCompra',p.vUnCom.toFixed(2));
+  setField('qtdComprada',Math.round(p.qCom)||1);
+  if(p.vFrete>0){setFrete(true);setField('valorFrete',p.vFrete.toFixed(2));}
+  setSelectValue('estadoOrigem',p.ufEmit);
+  setSelectValue('estadoDestino',p.ufDest);
+  updateDifal();
+  // Destaque visual
+  ['nomeProduto','valorCompra','qtdComprada'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(!el)return;
+    el.classList.add('filled');
+    setTimeout(()=>el.classList.remove('filled'),2500);
+  });
+  showXMLStatus(`✓ Selecionado: "${p.xProd}" · R$ ${p.vUnCom.toFixed(2)}/un · Qtd ${p.qCom} · ICMS ${p.icmsPct.toFixed(1)}% · IPI ${p.ipiPct.toFixed(1)}% — ajuste a margem e clique em Calcular.`,'ok');
+  setTimeout(()=>document.getElementById('nomeProduto').scrollIntoView({behavior:'smooth',block:'center'}),100);
 }
 
-// ──────────────────────────────────────────────
-// CÁLCULO PRINCIPAL
-// ──────────────────────────────────────────────
-function calcular() {
-  const nome      = document.getElementById('nomeProduto').value.trim() || 'Produto';
-  const compra    = parseFloat(document.getElementById('valorCompra').value) || 0;
-  const qtd       = parseInt(document.getElementById('qtdComprada').value) || 1;
-  const custoExtra= parseFloat(document.getElementById('custoProd').value) || 0;
-  const pais      = document.getElementById('paisOrigem').value;
-  const ii        = pais !== 'BR' ? (parseFloat(document.getElementById('iiPct').value) || 0) : 0;
-  const orig      = document.getElementById('estadoOrigem').value;
-  const dest      = document.getElementById('estadoDestino').value;
-  const frete     = temFrete ? (parseFloat(document.getElementById('valorFrete').value) || 0) : 0;
-  const margPct   = parseFloat(document.getElementById('lucroSlider').value) || 40;
+function showDebug(lines){
+  const box=document.getElementById('debugBox');
+  if(!lines.length){box.style.display='none';return;}
+  box.style.display='block';
+  box.textContent=lines.join('\n');
+}
+function setField(id,val){const el=document.getElementById(id);if(el)el.value=val;}
+function setSelectValue(id,val){
+  const sel=document.getElementById(id);if(!sel)return;
+  for(const o of sel.options){if(o.value===val){o.selected=true;return;}}
+}
+function showXMLStatus(msg,type){
+  const el=document.getElementById('xmlStatus');
+  el.textContent=msg;el.className='xml-status '+(type||'ok');el.style.display='block';
+}
 
-  if (compra <= 0) { alert('Informe o valor de compra do produto.'); return; }
+// ═══════════════════════════════════════════════════════
+// UI
+// ═══════════════════════════════════════════════════════
+function setRegime(r){
+  regime=r;
+  document.getElementById('btnMei').className='toggle-btn'+(r==='mei'?' active':'');
+  document.getElementById('btnSN').className='toggle-btn'+(r==='sn'?' active':'');
+  const b=document.getElementById('infoRegime');
+  if(r==='mei'){b.textContent='MEI: isento de IRPJ, CSLL, PIS, COFINS e IPI. Paga apenas o DAS fixo mensal. Limite anual: R$ 81.000.';b.className='info-box green';}
+  else{b.textContent='Simples Nacional: alíquota efetiva conforme faixa de faturamento (Anexo I — 4% a 11,61%). DAS inclui todos os tributos.';b.className='info-box amber';}
+}
+function setFrete(s){
+  temFrete=s;
+  document.getElementById('btnFreteN').className='toggle-btn'+(!s?' active':'');
+  document.getElementById('btnFreteS').className='toggle-btn'+(s?' active':'');
+  document.getElementById('freteValor').style.display=s?'block':'none';
+}
+function toggleImport(){document.getElementById('divII').style.display=document.getElementById('paisOrigem').value!=='BR'?'block':'none';}
+function updateSlider(){document.getElementById('lucroVal').textContent=document.getElementById('lucroSlider').value+'%';}
+function updateDifal(){
+  const o=document.getElementById('estadoOrigem').value;
+  const d=document.getElementById('estadoDestino').value;
+  const iO=ICMS[o]||18,iD=ICMS[d]||18,inter=getInter(o,d),difal=iD-inter;
+  const b=document.getElementById('difal-info');
+  if(o===d){b.textContent=`Operação interna (${o}): ICMS ${iO}% sobre o valor da operação.`;b.className='info-box';}
+  else{b.innerHTML=`ICMS interestadual: <strong>${inter}%</strong> pago na origem (${o}). DIFAL: <strong>${difal.toFixed(1)}%</strong> = diferença entre ${iD}% (${d}) e ${inter}% interestadual.`;b.className=difal>0?'info-box amber':'info-box';}
+}
 
-  const icmsOrig  = ICMS[orig] || 18;
-  const icmsDest  = ICMS[dest] || 18;
-  const icmsInter = getInter(orig, dest);
+// ═══════════════════════════════════════════════════════
+// CÁLCULO
+// ═══════════════════════════════════════════════════════
+function fmt(v){return 'R$ '+parseFloat(v).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function fmtP(v){return parseFloat(v).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:2})+'%';}
 
-  // ── Impostos sobre compra ──
-  const iiValor   = compra * (ii / 100);
-  const ipiPct    = pais !== 'BR' ? 5 : 0;
-  const ipiValor  = (compra + iiValor) * (ipiPct / 100);
+function calcular(){
+  const nome=document.getElementById('nomeProduto').value.trim()||'Produto';
+  const compra=parseFloat(document.getElementById('valorCompra').value)||0;
+  const qtd=parseInt(document.getElementById('qtdComprada').value)||1;
+  const extra=parseFloat(document.getElementById('custoProd').value)||0;
+  const pais=document.getElementById('paisOrigem').value;
+  const ii=pais!=='BR'?(parseFloat(document.getElementById('iiPct').value)||0):0;
+  const orig=document.getElementById('estadoOrigem').value;
+  const dest=document.getElementById('estadoDestino').value;
+  const frete=temFrete?(parseFloat(document.getElementById('valorFrete').value)||0):0;
+  const margPct=parseFloat(document.getElementById('lucroSlider').value)||40;
+  if(compra<=0){alert('Informe o valor de compra do produto.');return;}
 
-  let pisCofinsValor = 0;
-  let icmsValor      = 0;
-  let difalValor     = 0;
-  let snAliq         = 0; // incide sobre o PREÇO DE VENDA no SN
+  const iO=ICMS[orig]||18,iD=ICMS[dest]||18,inter=getInter(orig,dest);
+  const iiV=compra*(ii/100);
+  const ipiP=pais!=='BR'?5:0;
+  const ipiV=(compra+iiV)*(ipiP/100);
+  let pisV=0,icmsV=0,difalV=0,snAliq=0,icmsAliq=0;
 
-  if (regime === 'mei') {
-    pisCofinsValor = compra * 0.0925; // PIS 0,65% + COFINS 3% + contribuição media
-    icmsValor = orig === dest
-      ? compra * (icmsOrig / 100)
-      : compra * (icmsInter / 100);
-    difalValor = orig !== dest ? compra * ((icmsDest - icmsInter) / 100) : 0;
-    snAliq = 0;
-  } else {
-    // Simples Nacional: PIS, COFINS, IRPJ, CSLL, CPP, ICMS → tudo no DAS
-    // DAS incide sobre o faturamento (preço de venda)
-    snAliq = 4; // 1ª faixa Anexo I até R$180k
-    pisCofinsValor = 0;
-    icmsValor = 0;
-    difalValor = orig !== dest ? compra * ((icmsDest - icmsInter) / 100) : 0;
+  if(regime==='mei'){
+    icmsAliq=(selectedProdIdx>=0&&nfeProdutos[selectedProdIdx])?nfeProdutos[selectedProdIdx].icmsPct:(orig===dest?iO:inter);
+    pisV=compra*0.0925;
+    icmsV=compra*(icmsAliq/100);
+    difalV=orig!==dest?compra*((iD-inter)/100):0;
+  }else{
+    snAliq=4;
+    icmsAliq=orig===dest?iO:inter;
+    difalV=orig!==dest?compra*((iD-inter)/100):0;
   }
 
-  const totalImpostos = iiValor + ipiValor + pisCofinsValor + icmsValor + difalValor;
-  const freteUni = frete / qtd;
-  const custoUni = compra + iiValor + ipiValor + pisCofinsValor + icmsValor + difalValor + freteUni + custoExtra;
+  const totImp=iiV+ipiV+pisV+icmsV+difalV;
+  const freteUni=frete/qtd;
+  const custoUni=compra+totImp+freteUni+extra;
+  const pvMU=custoUni*(1+margPct/100);
+  const pvMG=custoUni/(1-margPct/100);
+  const dasMU=regime==='sn'?pvMU*(snAliq/100):0;
+  const dasMG=regime==='sn'?pvMG*(snAliq/100):0;
+  const liqMU=pvMU-custoUni-dasMU;
+  const liqMG=pvMG-custoUni-dasMG;
+  const mRMU=(liqMU/pvMU)*100,mRMG=(liqMG/pvMG)*100;
+  const winner=liqMU>=liqMG?'markup':'margem';
 
-  // ── Precificação ──
-  // Mark-up: Preço = Custo × (1 + margem)
-  const pvMarkup  = custoUni * (1 + margPct / 100);
-  // Margem de lucro: Preço = Custo / (1 − margem)
-  const pvMargem  = custoUni / (1 - margPct / 100);
+  document.getElementById('results').style.display='block';
 
-  // DAS do Simples Nacional sobre o preço de venda
-  const dasMarkup = regime === 'sn' ? pvMarkup * (snAliq / 100) : 0;
-  const dasMargem = regime === 'sn' ? pvMargem * (snAliq / 100) : 0;
-
-  const liqMarkup = pvMarkup - custoUni - dasMarkup;
-  const liqMargem = pvMargem - custoUni - dasMargem;
-  const margemRealMarkup = (liqMarkup / pvMarkup) * 100;
-  const margemRealMargem = (liqMargem / pvMargem) * 100;
-
-  const winner = liqMarkup >= liqMargem ? 'markup' : 'margem';
-
-  // ──────────────────────────────
-  // RENDERIZAÇÃO
-  // ──────────────────────────────
-  document.getElementById('results').style.display = 'block';
-
-  // CUSTO UNITÁRIO
-  document.getElementById('custosGrid').innerHTML = `
-    <div class="metric">
-      <div class="metric-label">Valor de compra</div>
-      <div class="metric-value">${fmt(compra)}</div>
-    </div>
-    ${frete > 0 ? `<div class="metric">
-      <div class="metric-label">Frete / unidade</div>
-      <div class="metric-value">${fmt(freteUni)}</div>
-    </div>` : ''}
-    ${totalImpostos > 0 ? `<div class="metric highlight-red">
-      <div class="metric-label">Total impostos s/ compra</div>
-      <div class="metric-value red">${fmt(totalImpostos)}</div>
-    </div>` : ''}
-    ${custoExtra > 0 ? `<div class="metric">
-      <div class="metric-label">Custo adicional/un.</div>
-      <div class="metric-value">${fmt(custoExtra)}</div>
-    </div>` : ''}
-    <div class="metric highlight-amber">
-      <div class="metric-label">✦ Custo unitário total</div>
-      <div class="metric-value amber">${fmt(custoUni)}</div>
-    </div>
-    ${qtd >= 2 ? `<div class="metric">
-      <div class="metric-label">Total lote (${qtd} un.)</div>
-      <div class="metric-value amber">${fmt(custoUni * qtd)}</div>
-    </div>` : ''}
+  document.getElementById('custosGrid').innerHTML=`
+    <div class="metric"><div class="metric-label">Valor de compra</div><div class="metric-value">${fmt(compra)}</div></div>
+    ${frete>0?`<div class="metric"><div class="metric-label">Frete/unidade</div><div class="metric-value">${fmt(freteUni)}</div></div>`:''}
+    ${totImp>0?`<div class="metric hl-red"><div class="metric-label">Total impostos</div><div class="metric-value red">${fmt(totImp)}</div></div>`:''}
+    ${extra>0?`<div class="metric"><div class="metric-label">Custo adicional/un.</div><div class="metric-value">${fmt(extra)}</div></div>`:''}
+    <div class="metric hl-amber"><div class="metric-label">✦ Custo unitário final</div><div class="metric-value amber">${fmt(custoUni)}</div></div>
+    ${qtd>=2?`<div class="metric"><div class="metric-label">Total lote (${qtd} un.)</div><div class="metric-value amber">${fmt(custoUni*qtd)}</div></div>`:''}
   `;
 
-  // IMPOSTOS
-  const ir = document.getElementById('impostosRows');
-  ir.innerHTML = '';
-  const taxRows = [
-    pais !== 'BR' ? [`Imposto de Importação — II (${ii}%)`, iiValor] : null,
-    pais !== 'BR' ? [`IPI ${ipiPct}% (sobre compra + II)`, ipiValor] : null,
-    regime === 'mei' ? ['PIS/COFINS (9,25%)', pisCofinsValor] : null,
-    regime === 'mei' ? [`ICMS ${orig===dest?icmsOrig:icmsInter}% — ${orig}`, icmsValor] : null,
-    orig !== dest ? [`DIFAL — diferença alíquota (${dest} ${icmsDest}% − ${icmsInter}%)`, difalValor] : null,
-    regime === 'sn' ? [`Simples Nacional ${snAliq}% — incide sobre o preço de venda`, 'ver preço final'] : null,
+  const ir=document.getElementById('impostosRows');ir.innerHTML='';
+  const xmlTag=selectedProdIdx>=0?` <span style="font-size:10px;background:var(--green-bg);color:var(--green);padding:1px 6px;border-radius:10px;">XML</span>`:'';
+  const rows=[
+    pais!=='BR'?[`II — Imposto de Importação (${ii}%)`,iiV]:null,
+    pais!=='BR'?[`IPI ${ipiP}%`,ipiV]:null,
+    regime==='mei'?['PIS/COFINS (9,25%)',pisV]:null,
+    regime==='mei'?[`ICMS ${icmsAliq.toFixed(1)}% — ${orig}${xmlTag}`,icmsV]:null,
+    orig!==dest?[`DIFAL (${orig}→${dest}: ${iD}%−${inter}%)`,difalV]:null,
+    regime==='sn'?[`Simples Nacional ${snAliq}% — sobre o preço de venda`,'no preço final']:null,
   ].filter(Boolean);
-
-  if (taxRows.length === 0) {
-    ir.innerHTML = '<div class="tax-row"><span class="tax-row-label">Sem impostos adicionais sobre compra (DAS incluso no faturamento)</span></div>';
-  } else {
-    taxRows.forEach(([l, v]) => {
-      const d = document.createElement('div');
-      d.className = 'tax-row';
-      d.innerHTML = `<span class="tax-row-label">${l}</span><span class="tax-row-value">${typeof v==='number'?fmt(v):v}</span>`;
-      ir.appendChild(d);
-    });
-    const tot = document.createElement('div');
-    tot.className = 'tax-row total';
-    tot.innerHTML = `<span class="tax-row-label">Total impostos (sobre compra)</span><span class="tax-row-value">${fmt(totalImpostos)}</span>`;
-    ir.appendChild(tot);
+  if(!rows.length){ir.innerHTML='<div class="tax-row"><span class="tax-row-label">Sem impostos adicionais — DAS no faturamento</span></div>';}
+  else{
+    rows.forEach(([l,v])=>{const d=document.createElement('div');d.className='tax-row';d.innerHTML=`<span class="tax-row-label">${l}</span><span class="tax-row-value">${typeof v==='number'?fmt(v):v}</span>`;ir.appendChild(d);});
+    const t=document.createElement('div');t.className='tax-row total';t.innerHTML=`<span class="tax-row-label">Total impostos (sobre compra)</span><span class="tax-row-value">${fmt(totImp)}</span>`;ir.appendChild(t);
   }
 
-  // MARK-UP
-  document.getElementById('tagMarkup').innerHTML = winner === 'markup'
-    ? '<span class="badge-winner">✓ Melhor lucro líquido</span>' : '';
-  document.getElementById('markupGrid').innerHTML = `
-    <div class="metric highlight-green">
-      <div class="metric-label">Preço de venda</div>
-      <div class="metric-value green">${fmt(pvMarkup)}</div>
-    </div>
-    <div class="metric">
-      <div class="metric-label">Lucro bruto</div>
-      <div class="metric-value green">${fmt(pvMarkup - custoUni)}</div>
-    </div>
-    ${regime==='sn'?`<div class="metric highlight-red">
-      <div class="metric-label">DAS s/ venda (${snAliq}%)</div>
-      <div class="metric-value red">${fmt(dasMarkup)}</div>
-    </div>`:''}
-    <div class="metric">
-      <div class="metric-label">Lucro líquido</div>
-      <div class="metric-value green">${fmt(liqMarkup)}</div>
-    </div>
-    <div class="metric">
-      <div class="metric-label">Margem real s/ preço</div>
-      <div class="metric-value">${fmtPct(margemRealMarkup)}</div>
-    </div>
+  document.getElementById('tagMarkup').innerHTML=winner==='markup'?'<span class="badge-winner">✓ Melhor lucro líquido</span>':'';
+  document.getElementById('markupGrid').innerHTML=`
+    <div class="metric hl-green"><div class="metric-label">Preço de venda</div><div class="metric-value green">${fmt(pvMU)}</div></div>
+    <div class="metric"><div class="metric-label">Lucro bruto</div><div class="metric-value green">${fmt(pvMU-custoUni)}</div></div>
+    ${regime==='sn'?`<div class="metric hl-red"><div class="metric-label">DAS s/ venda (${snAliq}%)</div><div class="metric-value red">${fmt(dasMU)}</div></div>`:''}
+    <div class="metric"><div class="metric-label">Lucro líquido</div><div class="metric-value green">${fmt(liqMU)}</div></div>
+    <div class="metric"><div class="metric-label">Margem real</div><div class="metric-value">${fmtP(mRMU)}</div></div>
   `;
-  document.getElementById('formulaMarkup').textContent =
-    `Fórmula: ${fmt(custoUni)} × (1 + ${margPct}%) = ${fmt(pvMarkup)}`;
+  document.getElementById('formulaMarkup').textContent=`${fmt(custoUni)} × (1 + ${margPct}%) = ${fmt(pvMU)}`;
 
-  // MARGEM DE LUCRO
-  document.getElementById('tagMargem').innerHTML = winner === 'margem'
-    ? '<span class="badge-winner">✓ Melhor lucro líquido</span>' : '';
-  document.getElementById('margemGrid').innerHTML = `
-    <div class="metric" style="border-color:#1E3A5A;background:var(--blue-bg)">
-      <div class="metric-label">Preço de venda</div>
-      <div class="metric-value blue">${fmt(pvMargem)}</div>
-    </div>
-    <div class="metric">
-      <div class="metric-label">Lucro bruto</div>
-      <div class="metric-value blue">${fmt(pvMargem - custoUni)}</div>
-    </div>
-    ${regime==='sn'?`<div class="metric highlight-red">
-      <div class="metric-label">DAS s/ venda (${snAliq}%)</div>
-      <div class="metric-value red">${fmt(dasMargem)}</div>
-    </div>`:''}
-    <div class="metric">
-      <div class="metric-label">Lucro líquido</div>
-      <div class="metric-value blue">${fmt(liqMargem)}</div>
-    </div>
-    <div class="metric">
-      <div class="metric-label">Margem real s/ preço</div>
-      <div class="metric-value">${fmtPct(margemRealMargem)}</div>
-    </div>
+  document.getElementById('tagMargem').innerHTML=winner==='margem'?'<span class="badge-winner">✓ Melhor lucro líquido</span>':'';
+  document.getElementById('margemGrid').innerHTML=`
+    <div class="metric hl-blue"><div class="metric-label">Preço de venda</div><div class="metric-value blue">${fmt(pvMG)}</div></div>
+    <div class="metric"><div class="metric-label">Lucro bruto</div><div class="metric-value blue">${fmt(pvMG-custoUni)}</div></div>
+    ${regime==='sn'?`<div class="metric hl-red"><div class="metric-label">DAS s/ venda (${snAliq}%)</div><div class="metric-value red">${fmt(dasMG)}</div></div>`:''}
+    <div class="metric"><div class="metric-label">Lucro líquido</div><div class="metric-value blue">${fmt(liqMG)}</div></div>
+    <div class="metric"><div class="metric-label">Margem real</div><div class="metric-value">${fmtP(mRMG)}</div></div>
   `;
-  document.getElementById('formulaMargem').textContent =
-    `Fórmula: ${fmt(custoUni)} ÷ (1 − ${margPct}%) = ${fmt(pvMargem)}`;
+  document.getElementById('formulaMargem').textContent=`${fmt(custoUni)} ÷ (1 − ${margPct}%) = ${fmt(pvMG)}`;
 
-  // RESUMO COMPARATIVO
-  const resumo = document.getElementById('resumoRows');
-  resumo.innerHTML = `
-    <div class="tax-row">
-      <span class="tax-row-label">Custo unitário</span>
-      <span class="tax-row-value">${fmt(custoUni)}</span>
-    </div>
-    <div class="tax-row">
-      <span class="tax-row-label">Preço Mark-up</span>
-      <span class="tax-row-value" style="color:var(--green)">${fmt(pvMarkup)}</span>
-    </div>
-    <div class="tax-row">
-      <span class="tax-row-label">Preço Margem de Lucro</span>
-      <span class="tax-row-value" style="color:var(--blue)">${fmt(pvMargem)}</span>
-    </div>
-    <div class="tax-row">
-      <span class="tax-row-label">Lucro líquido Mark-up</span>
-      <span class="tax-row-value" style="color:var(--green)">${fmt(liqMarkup)} (${fmtPct(margemRealMarkup)} s/ preço)</span>
-    </div>
-    <div class="tax-row">
-      <span class="tax-row-label">Lucro líquido Margem</span>
-      <span class="tax-row-value" style="color:var(--blue)">${fmt(liqMargem)} (${fmtPct(margemRealMargem)} s/ preço)</span>
-    </div>
+  document.getElementById('resumoRows').innerHTML=`
+    <div class="tax-row"><span class="tax-row-label">Custo unitário</span><span class="tax-row-value">${fmt(custoUni)}</span></div>
+    <div class="tax-row"><span class="tax-row-label">Preço Mark-up</span><span class="tax-row-value" style="color:var(--green)">${fmt(pvMU)}</span></div>
+    <div class="tax-row"><span class="tax-row-label">Preço Margem de Lucro</span><span class="tax-row-value" style="color:var(--blue)">${fmt(pvMG)}</span></div>
+    <div class="tax-row"><span class="tax-row-label">Lucro líquido Mark-up</span><span class="tax-row-value" style="color:var(--green)">${fmt(liqMU)} (${fmtP(mRMU)})</span></div>
+    <div class="tax-row"><span class="tax-row-label">Lucro líquido Margem</span><span class="tax-row-value" style="color:var(--blue)">${fmt(liqMG)} (${fmtP(mRMG)})</span></div>
   `;
-  document.getElementById('resumoTexto').innerHTML = winner === 'markup'
-    ? `✅ <strong>Mark-up</strong> gera maior lucro líquido (${fmt(liqMarkup)}) neste cenário. Use quando quiser garantir uma cobertura clara sobre os seus custos.`
-    : `✅ <strong>Margem de Lucro</strong> gera maior lucro líquido (${fmt(liqMargem)}) neste cenário. É o método padrão no varejo e em notas fiscais.`;
+  document.getElementById('resumoTexto').innerHTML=winner==='markup'
+    ?`✅ <strong>Mark-up</strong> gera maior lucro líquido (${fmt(liqMU)}) neste cenário.`
+    :`✅ <strong>Margem de Lucro</strong> gera maior lucro líquido (${fmt(liqMG)}) neste cenário.`;
 
-  // BUSCA
-  document.getElementById('nomeBuscaLabel').textContent = '"' + nome + '"';
-  const nomeBusca = encodeURIComponent(nome);
-  document.getElementById('buscaBtns').innerHTML = `
-    <button class="search-btn" onclick="window.open('https://www.google.com/search?q=${nomeBusca}+preço','_blank')">🔍 Google Shopping</button>
-    <button class="search-btn" onclick="window.open('https://lista.mercadolivre.com.br/${nomeBusca}','_blank')">🛒 Mercado Livre</button>
-    <button class="search-btn" onclick="window.open('https://www.amazon.com.br/s?k=${nomeBusca}','_blank')">📦 Amazon Brasil</button>
-    <button class="search-btn" onclick="window.open('https://www.buscape.com.br/search?q=${nomeBusca}','_blank')">🏷 Buscapé</button>
+  document.getElementById('nomeBuscaLabel').textContent='"'+nome+'"';
+  const nb=encodeURIComponent(nome);
+  document.getElementById('buscaBtns').innerHTML=`
+    <button class="search-btn" onclick="window.open('https://www.google.com/search?q=${nb}+preço','_blank')">🔍 Google Shopping</button>
+    <button class="search-btn" onclick="window.open('https://lista.mercadolivre.com.br/${nb}','_blank')">🛒 Mercado Livre</button>
+    <button class="search-btn" onclick="window.open('https://www.amazon.com.br/s?k=${nb}','_blank')">📦 Amazon Brasil</button>
+    <button class="search-btn" onclick="window.open('https://www.buscape.com.br/search?q=${nb}','_blank')">🏷 Buscapé</button>
   `;
-
-  // Scroll suave
-  setTimeout(() => {
-    document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, 80);
+  setTimeout(()=>document.getElementById('results').scrollIntoView({behavior:'smooth',block:'start'}),80);
 }
+
+// ═══════════════════════════════════════════════════════
+// TEMA CLARO / ESCURO
+// ═══════════════════════════════════════════════════════
+(function initTheme(){
+  const saved=localStorage.getItem('theme');
+  if(saved==='light'){document.body.classList.add('light');document.getElementById('themeBtn').textContent='☀️';}
+})();
+function toggleTheme(){
+  const isLight=document.body.classList.toggle('light');
+  document.getElementById('themeBtn').textContent=isLight?'☀️':'🌙';
+  localStorage.setItem('theme',isLight?'light':'dark');
+}
+
+// ═══════════════════════════════════════════════════════
+// CALCULADORA FLUTUANTE
+// ═══════════════════════════════════════════════════════
+let cCurrent='0', cPrev='', cOperator='', cShouldReset=false;
+
+function cDisplay(){
+  document.getElementById('cVal').textContent=cCurrent;
+  document.getElementById('cExpr').textContent=cPrev&&cOperator?cPrev+' '+cOperator:'';
+}
+function openCalc(){document.getElementById('calcOverlay').classList.add('open');}
+function closeCalc(){document.getElementById('calcOverlay').classList.remove('open');}
+function closeCalcOutside(e){if(e.target===document.getElementById('calcOverlay'))closeCalc();}
+
+function cNum(n){
+  if(cShouldReset){cCurrent='';cShouldReset=false;}
+  if(n==='.'&&cCurrent.includes('.'))return;
+  if(n!=='.'&&cCurrent==='0')cCurrent='';
+  cCurrent+=n;
+  if(cCurrent===''||cCurrent==='-')cCurrent='0';
+  cDisplay();
+}
+function cOp(op){
+  if(cOperator&&!cShouldReset){cEquals(true);}
+  cPrev=cCurrent;
+  cOperator=op;
+  cShouldReset=true;
+  cDisplay();
+}
+function cEquals(chain=false){
+  if(!cOperator||!cPrev)return;
+  const a=parseFloat(cPrev), b=parseFloat(cCurrent);
+  let r=0;
+  if(cOperator==='+')r=a+b;
+  else if(cOperator==='−')r=a-b;
+  else if(cOperator==='×')r=a*b;
+  else if(cOperator==='÷')r=b!==0?a/b:0;
+  // Arredonda para evitar floating point lixo
+  r=parseFloat(r.toPrecision(12));
+  if(!chain){document.getElementById('cExpr').textContent=cPrev+' '+cOperator+' '+cCurrent+' =';}
+  cCurrent=String(r);
+  cOperator='';cPrev='';cShouldReset=true;
+  document.getElementById('cVal').textContent=cCurrent;
+}
+function cFn(fn){
+  if(fn==='AC'){cCurrent='0';cPrev='';cOperator='';cShouldReset=false;}
+  else if(fn==='+/-'){cCurrent=String(parseFloat(cCurrent)*-1);}
+  else if(fn==='%'){cCurrent=String(parseFloat(cCurrent)/100);}
+  cDisplay();
+}
+// Teclado físico para a calculadora
+document.addEventListener('keydown',e=>{
+  if(!document.getElementById('calcOverlay').classList.contains('open'))return;
+  if(e.key>='0'&&e.key<='9')cNum(e.key);
+  else if(e.key==='.')cNum('.');
+  else if(e.key==='+')cOp('+');
+  else if(e.key==='-')cOp('−');
+  else if(e.key==='*')cOp('×');
+  else if(e.key==='/')cOp('÷');
+  else if(e.key==='Enter'||e.key==='=')cEquals();
+  else if(e.key==='Escape')closeCalc();
+  else if(e.key==='Backspace'){
+    if(cCurrent.length>1)cCurrent=cCurrent.slice(0,-1);
+    else cCurrent='0';
+    cDisplay();
+  }
+});
+
+// ═══════════════════════════════════════════════════════
+// PWA
+// ═══════════════════════════════════════════════════════
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('/service-worker.js')
+      .then(()=>console.log('SW ✓'))
+      .catch(e=>console.warn('SW:',e));
+  });
+}
+window.addEventListener('offline',()=>document.getElementById('offline-banner').style.display='block');
+window.addEventListener('online', ()=>document.getElementById('offline-banner').style.display='none');
 </script>
 </body>
 </html>
